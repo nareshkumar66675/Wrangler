@@ -1,17 +1,11 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[1]:
 
 
-# Import all libraries needed for the tutorial
-
-# General syntax to import specific functions in a library: 
-##from (library) import (specific library function)
 from pandas import DataFrame, read_csv
 
-# General syntax to import a library but no functions: 
-##import (library) as (give the library a nickname/alias)
 import matplotlib.pyplot as plt
 import pandas as pd #this is how I usually import pandas
 import sys #only needed to determine Python version number
@@ -21,235 +15,76 @@ import matplotlib #only needed to determine Matplotlib version number
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
-
-
-fv
-
-
-# In[ ]:
-
-
-print('Pandas version ' + pd.__version__)
-
-
-# In[ ]:
+# In[2]:
 
 
 Titanic = r'C:\Users\kumar\OneDrive\Documents\Projects\Wrangler\data\external\train.csv'
 df = pd.read_csv(Titanic)
 
 
-# In[ ]:
+# In[3]:
 
 
-df
+dataFrame = pd.read_csv(Titanic)
 
 
-# In[ ]:
+# In[4]:
 
 
 TitanicTest = r'C:\Users\kumar\OneDrive\Documents\Projects\Wrangler\data\external\test.csv'
 df = pd.read_csv(TitanicTest)
 
 
-# In[ ]:
-
-
-df
-
-
-# In[ ]:
-
-
-dataFrame = pd.read_csv(Titanic)
-
-
-# In[ ]:
+# In[5]:
 
 
 dataFrameTest = pd.read_csv(TitanicTest)
 
 
-# In[ ]:
-
-
-dataFrame.append(dataFrameTest)
-
-
-# In[58]:
+# In[7]:
 
 
 dataFrame = dataFrame.append(dataFrameTest,sort=True)
 
 
-# In[ ]:
-
-
-dataFrame.groupby([Age]/5)
-
-
-# In[ ]:
-
-
-dataFrame.groupby([Age])
-
-
-# In[62]:
-
-
-dataFrame
-
-
-# In[ ]:
-
-
-dataFrame.groupby('Age'/5)
-
-
-# In[ ]:
-
-
-numpy as np
-pd.cut(dataFrame.Age, np.array([1,5,10...]))
-
-
-# In[ ]:
+# In[11]:
 
 
 import numpy as np
-pd.cut(dataFrame.Age, np.array([1,5,10...]))
-
-
-# In[ ]:
-
-
-numpy as np
-pd.cut(dataFrame.Age, np.array([1,5,10]))
-
-
-# In[ ]:
-
-
-import numpy as np
-pd.cut(dataFrame.Age, np.array([1,5,10]))
-
-
-# In[ ]:
-
-
-dataFrame.groupby(pd.cut(dataFrame.Age, np.array([1,5,10])),'Sex')
-
-
-# In[ ]:
-
-
-dataFrame.groupby((pd.cut(dataFrame.Age, np.array([1,5,10])),'Sex'))
-
-
-# In[44]:
-
-
 bins = np.array([1,4,9,14,19,24,29,34,39,44,49,54,59,64,69,74,79,84,120])
 
 
-# In[ ]:
-
-
-groups = DataFrame.groupby((pd.cut(dataFrame.Age, bins))
-
-
-# In[ ]:
-
-
-groups = DataFrame.groupby(pd.cut(dataFrame.Age, bins))
-
-
-# In[ ]:
-
-
-dataFrame
-
-
-# In[28]:
-
-
-dataFrame.groupby((pd.cut(dataFrame.Age, bins)))
-
-
-# In[29]:
-
-
-groups = dataFrame.groupby((pd.cut(dataFrame.Age, bins)))
-
-
-# In[30]:
-
-
-groups.count()
-
-
-# In[31]:
+# In[18]:
 
 
 groups = dataFrame.groupby((pd.cut(dataFrame.Age, bins),'Sex'))
 
 
-# In[32]:
-
-
-groups = dataFrame.groupby((pd.cut(dataFrame.Age, bins)),'Sex')
-
-
-# In[33]:
-
-
-groups = dataFrame.groupby((pd.cut(dataFrame.Age, bins),'Sex'))
-
-
-# In[34]:
+# In[20]:
 
 
 groups.count()
 
 
-# In[38]:
-
-
-bins
-
-
-# In[60]:
-
-
-groups = dataFrame.groupby((pd.cut(dataFrame.Age, bins),'Sex'))
-
-
-# In[61]:
-
-
-groups.count()
-
-
-# In[63]:
+# In[21]:
 
 
 dfSurvived = dataFrame[dataFrame['Survived']==1]
 
 
-# In[64]:
+# In[22]:
 
 
 groupSurv = dfSurvived.groupby((pd.cut(dfSurvived.Age, bins),'Sex'))
 
 
-# In[67]:
+# In[23]:
 
 
 groupSurv.count()
 
 
-# In[83]:
+# In[24]:
 
 
 dfDec = dataFrame[dataFrame['Survived']==0]
@@ -257,26 +92,81 @@ groupDec = dfDec.groupby((pd.cut(dfDec.Age, bins),'Sex'))
 finDec = groupDec.size().reset_index(name='counts')
 
 
-# In[72]:
+# In[25]:
 
 
 finDec
 
 
-# In[84]:
+# In[26]:
 
 
-finDecP = finDec.pivot(index='Age',columns='Sex',values='counts')
+finDecP = finDec.pivot_table(index='Age',columns='Sex',values='counts')
 
 
-# In[85]:
+# In[ ]:
 
 
-finDec
+finDecP.columns.values
 
 
-# In[86]:
+# In[28]:
 
 
-finDec['Age']
+MortalityFile = r'C:\Users\kumar\OneDrive\Documents\Projects\Wrangler\data\external\Mortality.csv'
+dfMort = pd.read_csv(MortalityFile)
+dfMort
+
+
+# In[29]:
+
+
+dfMort['ag']=finDecP.index.values
+
+
+# In[30]:
+
+
+merged = pd.merge(finDecP, dfMort, left_index=True, right_on='ag',how='outer')
+
+
+# In[31]:
+
+
+merged['Avg Mortality Rate - Male'] = merged['Male']/100000
+merged['Titanic Mortality Rate - Male'] = merged['male']/dataFrame.shape[0]
+merged['Avg Mortality Rate - Female']= merged['Female']/10000
+merged['Titanic Mortality Rate - Female'] = merged['female']/dataFrame.shape[0]
+
+
+# In[32]:
+
+
+merged
+
+
+# In[33]:
+
+
+import matplotlib.pyplot as plt
+
+
+# In[34]:
+
+
+merged = merged.set_index('Age')
+plt.figure();
+merged.plot(y=['Avg Mortality Rate - Male','Titanic Mortality Rate - Male','Avg Mortality Rate - Female','Titanic Mortality Rate - Male'])
+
+
+# In[36]:
+
+
+merged.to_csv(r'C:\Users\kumar\OneDrive\Documents\Projects\Wrangler\reports\Merged.csv')
+
+
+# In[37]:
+
+
+merged.to_html(r'C:\Users\kumar\OneDrive\Documents\Projects\Wrangler\reports\Merged.html')
 
