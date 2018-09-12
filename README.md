@@ -53,6 +53,17 @@ It is a Data Science Project.
 
 
 
+# Project Struture
+
+##### Src
+- Wrangler.py - python file exported from Jupyter
+##### Notebooks
+- Wrangler.ipynb - Jupyter notebook
+##### Data
+- External - Titanic & Mortality Data
+##### Reports
+- Html Table - Merged Final results
+- Plot - Average vs Titanic Mortality
 
 
   
